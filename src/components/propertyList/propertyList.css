@@ -8,11 +8,12 @@
 }
 
 .pListItem {
-    flex: 1;
+  flex: 1;
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
 }
+.pListItem h1 { text-transform: capitalize; }
 
 .pListImg {
   width: 100%;

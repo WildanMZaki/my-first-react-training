@@ -6,10 +6,12 @@ import { DateRange } from "react-date-range";
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import "./header.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { format } from "date-fns";
 import { pors } from "../../utils/text.js";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { SearchContext } from "../../contexts/SearchContext";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const Header = ({ type }) => {
   const [destination, setDestination] = useState('');
@@ -37,9 +39,13 @@ const Header = ({ type }) => {
     })
   };
 
+  const { dispatch } = useContext(SearchContext);
+  const { user } = useContext(AuthContext);
+
   const navigate = useNavigate();
 
   const handleSearch = () => {
+    dispatch({ type: 'NEW_SEARCH', payload: { destination, dates: date, options }});
     navigate('/hotels', { state: {destination, date, options} })
   }
 
@@ -74,7 +80,9 @@ const Header = ({ type }) => {
         { type !== 'list' && <>
         <h1 className="headerTitle">A Lifetime of Discount?! It's Genius</h1>
         <p className="headerDesc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis quidem, officia, incidunt placeat libero quasi consequuntur fuga et provident eius distinctio omnis porro, aliquid facere hic voluptates? Esse, ipsam nihil.</p>
-        <button className="headerBtn">Sign In / Register</button>
+          { !user && <Link to='/login'>
+            <button className="headerBtn">Sign In / Register</button>
+          </Link> }
 
           <div className="headerSearch">
             <div className="headerSearchItem">

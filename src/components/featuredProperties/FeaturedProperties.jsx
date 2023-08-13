@@ -1,48 +1,30 @@
+import useFetch from '../../hooks/useFetch.js';
+import { mainAPI, rating } from '../../utils/text.js';
+import Loading from '../loading/Loading.jsx';
 import './featuredProperties.css';
 
-function FeaturedProperties() {
+const FeaturedProperties = () => {
+  const { data, loading, error } = useFetch(mainAPI('/hotels?featured=true&lim=4'));
+  let hotels;
+  if (!loading) { hotels = data.data.hotels; }
   return (
     <div className='fp'>
-      <div className="fpItem">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ-T_o06x2bVxX1TEzaZBMlUubDxgyKgxdKw&usqp=CAU" alt="" className="fpImg" />
-        <span className="fpName">Villa in Metropolitan</span>
-        <span className="fpCity">Newyork</span>
-        <span className="fpPrice">Starting from $100</span>
-        <div className="fpRating">
-          <button>7.5</button>
-          <span>Great</span>
-        </div>
-      </div>
-      <div className="fpItem">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_f72e1WwsESlgTbATly5zBlQ0z0rEFllyfQ&usqp=CAU" alt="" className="fpImg" />
-        <span className="fpName">Cabins in Ubud</span>
-        <span className="fpCity">Ubud</span>
-        <span className="fpPrice">Starting from $85</span>
-        <div className="fpRating">
-          <button>9.1</button>
-          <span>Awesome</span>
-        </div>
-      </div>
-      <div className="fpItem">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7u5CFDkKXLyj76l3x_4boyzI6Dmgi5goFRA&usqp=CAU" alt="" className="fpImg" />
-        <span className="fpName">Mini Resorts</span>
-        <span className="fpCity">Madrid</span>
-        <span className="fpPrice">Starting from $50</span>
-        <div className="fpRating">
-          <button>8.5</button>
-          <span>Excellent</span>
-        </div>
-      </div>
-      <div className="fpItem">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPFLGuWGI10AWMS_psyuQKuZVSkU5MSnQf6w&usqp=CAU" alt="" className="fpImg" />
-        <span className="fpName">Glamorous Hotel</span>
-        <span className="fpCity">Dubai</span>
-        <span className="fpPrice">Starting from $205</span>
-        <div className="fpRating">
-          <button>9.5</button>
-          <span>Awesome</span>
-        </div>
-      </div>
+      { loading ? <Loading /> : (
+          hotels.map(hotel => (
+            <div className='fpItem' key={hotel._id}>
+              <img src={hotel.photos[0]} alt='Property Image' className='fpImg' />
+              <span className='fpName'>{hotel.name}</span>
+              <span className='fpCity'>{hotel.city}</span>
+              <span className='fpPrice'>Starting from ${hotel.cheapestPrice}</span>
+              { hotel.rating && <div className='fpRating'>
+                  <button>{hotel.rating}</button>
+                  <span>{ rating(hotel.rating) }</span>
+                </div>
+              }
+            </div>
+          ))
+        )
+      }
     </div>
   )
 }
